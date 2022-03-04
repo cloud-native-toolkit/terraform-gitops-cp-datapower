@@ -1,0 +1,7 @@
+apiVersion: v1
+data:
+  datapower.cfg: ""
+kind: ConfigMap
+metadata:
+  creationTimestamp: null
+  name: dp-webui-config

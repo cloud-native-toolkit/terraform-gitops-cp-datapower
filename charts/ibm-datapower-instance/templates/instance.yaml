@@ -1,0 +1,7 @@
+apiVersion: datapower.ibm.com/v1beta3
+kind: DataPowerService
+metadata:
+  name: {{ .Values.datapower-instance.name }}
+  namespace: {{ .Values.datapower-instance.namespace }}
+spec:
+  {{- toYaml .Values.datapower-instance.spec | nindent 2 }}

@@ -1,0 +1,25 @@
+datapower-instance:
+  name: dp
+  namespace: gitops-cp-datapower
+  spec:
+    domains: #This section uploads the config map
+      - name: default
+        dpApp:
+          config:
+            - dp-webui-config
+    license:
+      accept: true
+      license: L-RJON-BYDR3Q
+      use: nonproduction
+    resources:
+      limits:
+        memory: 4Gi
+      requests:
+        cpu: 1
+        memory: 4Gi
+    users:
+      - accessLevel: privileged
+        name: admin
+        passwordSecret: dp-credentials
+    version: 10.0-cd
+    replicas: 1
