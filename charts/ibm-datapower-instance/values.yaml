@@ -1,4 +1,4 @@
-datapower-instance:
+datapower_instance:
   name: dp
   namespace: gitops-cp-datapower
   spec:
@@ -9,7 +9,7 @@ datapower-instance:
             - dp-webui-config
     license:
       accept: true
-      license: L-RJON-BYDR3Q
+      license: L-RJON-C5SF54
       use: nonproduction
     resources:
       limits:
@@ -23,3 +23,7 @@ datapower-instance:
         passwordSecret: dp-credentials
     version: 10.0-cd
     replicas: 1
+webUIconfigMap:
+  name: dp-webui-config
+passwordSecret:
+  name: dp-credentials

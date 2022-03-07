@@ -4,12 +4,6 @@ GIT_REPO=$(cat git_repo)
 GIT_TOKEN=$(cat git_token)
 
 export KUBECONFIG=$(cat .kubeconfig)
-NAMESPACE=$(cat .namespace)
-COMPONENT_NAME=$(jq -r '.name // "my-module"' gitops-output.json)
-BRANCH=$(jq -r '.branch // "main"' gitops-output.json)
-SERVER_NAME=$(jq -r '.server_name // "default"' gitops-output.json)
-LAYER=$(jq -r '.layer_dir // "2-services"' gitops-output.json)
-TYPE=$(jq -r '.type // "base"' gitops-output.json)
 
 mkdir -p .testrepo
 
@@ -19,21 +13,32 @@ cd .testrepo || exit 1
 
 find . -name "*"
 
-if [[ ! -f "argocd/${LAYER}/cluster/${SERVER_NAME}/${TYPE}/${NAMESPACE}-${COMPONENT_NAME}.yaml" ]]; then
-  echo "ArgoCD config missing - argocd/${LAYER}/cluster/${SERVER_NAME}/${TYPE}/${NAMESPACE}-${COMPONENT_NAME}.yaml"
+NAMESPACE="openshift-operators"
+BRANCH="main"
+SERVER_NAME="default"
+TYPE="operators"
+
+echo "<-------------Printing contents of gitops-output.json------------->"
+cat gitops-output.json
+
+COMPONENT_NAME="datapower-operator"
+
+if [[ ! -f "argocd/2-services/cluster/${SERVER_NAME}/${TYPE}/${NAMESPACE}-${COMPONENT_NAME}.yaml" ]]; then
+  echo "ArgoCD config missing - argocd/2-services/cluster/${SERVER_NAME}/${TYPE}/${NAMESPACE}-${COMPONENT_NAME}.yaml"
   exit 1
 fi
 
-echo "Printing argocd/${LAYER}/cluster/${SERVER_NAME}/${TYPE}/${NAMESPACE}-${COMPONENT_NAME}.yaml"
-cat "argocd/${LAYER}/cluster/${SERVER_NAME}/${TYPE}/${NAMESPACE}-${COMPONENT_NAME}.yaml"
+echo "Printing argocd/2-services/cluster/${SERVER_NAME}/${TYPE}/${NAMESPACE}-${COMPONENT_NAME}.yaml"
+cat "argocd/2-services/cluster/${SERVER_NAME}/${TYPE}/${NAMESPACE}-${COMPONENT_NAME}.yaml"
 
-if [[ ! -f "payload/${LAYER}/namespace/${NAMESPACE}/${COMPONENT_NAME}/values.yaml" ]]; then
-  echo "Application values not found - payload/${LAYER}/namespace/${NAMESPACE}/${COMPONENT_NAME}/values.yaml"
+if [[ ! -f "payload/2-services/namespace/${NAMESPACE}/${COMPONENT_NAME}/values.yaml" ]]; then
+  echo "Application values not found - payload/2-services/namespace/${NAMESPACE}/${COMPONENT_NAME}/values.yaml"
   exit 1
 fi
 
-echo "Printing payload/${LAYER}/namespace/${NAMESPACE}/${COMPONENT_NAME}/values.yaml"
-cat "payload/${LAYER}/namespace/${NAMESPACE}/${COMPONENT_NAME}/values.yaml"
+echo "Printing payload/2-services/namespace/${NAMESPACE}/${COMPONENT_NAME}/values.yaml"
+cat "payload/2-services/namespace/${NAMESPACE}/${COMPONENT_NAME}/values.yaml"
+
 
 count=0
 until kubectl get namespace "${NAMESPACE}" 1> /dev/null 2> /dev/null || [[ $count -eq 20 ]]; do
@@ -50,21 +55,93 @@ else
   sleep 30
 fi
 
-DEPLOYMENT="${COMPONENT_NAME}-${BRANCH}"
+SUBSCRIPTION="subscription/${COMPONENT_NAME}"
 count=0
-until kubectl get deployment "${DEPLOYMENT}" -n "${NAMESPACE}" || [[ $count -eq 20 ]]; do
-  echo "Waiting for deployment/${DEPLOYMENT} in ${NAMESPACE}"
+until $(kubectl get subscriptions -n "${NAMESPACE}" | grep "${SUBSCRIPTION}") || [[ $count -eq 20 ]]; do
+  echo "Waiting for ${SUBSCRIPTION} in ${NAMESPACE}"
   count=$((count + 1))
   sleep 15
 done
 
 if [[ $count -eq 20 ]]; then
-  echo "Timed out waiting for deployment/${DEPLOYMENT} in ${NAMESPACE}"
-  kubectl get all -n "${NAMESPACE}"
+  echo "Timed out waiting for ${SUBSCRIPTION} in ${NAMESPACE}"
+  kubectl get subscription -n "${NAMESPACE}"
   exit 1
 fi
 
-kubectl rollout status "deployment/${DEPLOYMENT}" -n "${NAMESPACE}" || exit 1
+CSV="datapower-operator"
+count=0
+until [[ $(kubectl get csv -n "${NAMESPACE}" -l operators.coreos.com/${CSV}.${NAMESPACE}="" -o=jsonpath='{range .items[]}{.metadata.name}{"\n"}{end}' | wc -l) -gt 0 ]] || [[ $count -eq 20 ]]; do
+  echo "Waiting for csv ${CSV} in ${NAMESPACE}"
+  count=$((count + 1))
+  sleep 15
+done
+
+if [[ $count -eq 20 ]]; then
+  echo "Timed out waiting for ${CSV} in ${NAMESPACE}"
+  kubectl get csv -n "${NAMESPACE}"
+  exit 1
+fi
+
+echo "Found CSV"
+kubectl get csv -n "${NAMESPACE}" -l operators.coreos.com/${CSV}.${NAMESPACE}="" -o=jsonpath='{range .items[]}{.metadata.name}{"\n"}{end}'
+
+## ***** Instance
+
+NAMESPACE="gitops-cp-datapower"
+BRANCH="main"
+SERVER_NAME="default"
+TYPE="instances"
+
+COMPONENT_NAME="ibm-datapower-instance"
+
+if [[ ! -f "argocd/2-services/cluster/${SERVER_NAME}/${TYPE}/${NAMESPACE}-${COMPONENT_NAME}.yaml" ]]; then
+  echo "ArgoCD config missing - argocd/2-services/cluster/${SERVER_NAME}/${TYPE}/${NAMESPACE}-${COMPONENT_NAME}.yaml"
+  exit 1
+fi
+
+echo "Printing argocd/2-services/cluster/${SERVER_NAME}/${TYPE}/${NAMESPACE}-${COMPONENT_NAME}.yaml"
+cat "argocd/2-services/cluster/${SERVER_NAME}/${TYPE}/${NAMESPACE}-${COMPONENT_NAME}.yaml"
+
+if [[ ! -f "payload/2-services/namespace/${NAMESPACE}/${COMPONENT_NAME}/values.yaml" ]]; then
+  echo "Application values not found - payload/2-services/namespace/${NAMESPACE}/${COMPONENT_NAME}/values.yaml"
+  exit 1
+fi
+
+echo "Printing payload/2-services/namespace/${NAMESPACE}/${COMPONENT_NAME}/values.yaml"
+cat "payload/2-services/namespace/${NAMESPACE}/${COMPONENT_NAME}/values.yaml"
 
 cd ..
 rm -rf .testrepo
+
+INSTANCE_NAME="dp"
+CR="datapowerservice/${INSTANCE_NAME}"
+count=0
+until kubectl get "${CR}" -n "${NAMESPACE}" || [[ $count -eq 20 ]]; do
+  echo "Waiting for ${CR} in ${NAMESPACE}"
+  count=$((count + 1))
+  sleep 15
+done
+
+if [[ $count -eq 20 ]]; then
+  echo "Timed out waiting for ${CR} in ${NAMESPACE}"
+  kubectl get datapowerservice -n "${NAMESPACE}"
+  exit 1
+fi
+
+count=0
+until [[ $(kubectl get sts -n "${NAMESPACE}" -l "app.kubernetes.io/instance=${NAMESPACE}-${INSTANCE_NAME}" | wc -l) -gt 0 ]] || [[ $count -eq 20 ]]; do
+  echo "Waiting for statefulset in ${NAMESPACE} with label app.kubernetes.io/instance=${NAMESPACE}-${INSTANCE_NAME}"
+  count=$((count + 1))
+  sleep 60
+done
+
+if [[ $count -eq 20 ]]; then
+  echo "Timed out waiting for statefulset in ${NAMESPACE} with label app.kubernetes.io/instance=${NAMESPACE}-${INSTANCE_NAME}"
+  kubectl get sts -n "${NAMESPACE}"
+  exit 1
+fi
+
+STS_NAME=$(kubectl get sts -n "${NAMESPACE}" -l "app.kubernetes.io/instance=${NAMESPACE}-${INSTANCE_NAME}" -o jsonpath='{range .items[]}{.metadata.name}{"\n"}{end}')
+echo "Waiting for statefulset rollout: ${STS_NAME}"
+oc rollout status sts "${STS_NAME}" -n "${NAMESPACE}" --timeout=10m
