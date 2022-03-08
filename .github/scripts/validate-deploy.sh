@@ -104,12 +104,12 @@ echo "Printing argocd/2-services/cluster/${SERVER_NAME}/${TYPE}/${NAMESPACE}-${C
 cat "argocd/2-services/cluster/${SERVER_NAME}/${TYPE}/${NAMESPACE}-${COMPONENT_NAME}.yaml"
 
 if [[ ! -f "payload/2-services/namespace/${NAMESPACE}/${COMPONENT_NAME}/values.yaml" ]]; then
-  echo "Application values not found - payload/2-services/namespace/${NAMESPACE}/${COMPONENT_NAME}/values.yaml"
+  echo "Application values not found - payload/2-services/namespace/${NAMESPACE}/${COMPONENT_NAME}/values.${SERVER_NAME}.yaml"
   exit 1
 fi
 
-echo "Printing payload/2-services/namespace/${NAMESPACE}/${COMPONENT_NAME}/values.yaml"
-cat "payload/2-services/namespace/${NAMESPACE}/${COMPONENT_NAME}/values.yaml"
+echo "Printing payload/2-services/namespace/${NAMESPACE}/${COMPONENT_NAME}/values.${SERVER_NAME}.yaml"
+cat "payload/2-services/namespace/${NAMESPACE}/${COMPONENT_NAME}/values.${SERVER_NAME}.yaml"
 
 cd ..
 rm -rf .testrepo

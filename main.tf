@@ -40,12 +40,12 @@ locals {
           use = var.dpLicenseUse
         }
         resources = {
-          limits = {
-            memory = var.memoryLimits
-          }
           requests = {
             cpu    = var.cpuRequests
             memory = var.memoryRequests
+          }
+          limits = {
+            memory = var.memoryLimits
           }
         }
         users = [
