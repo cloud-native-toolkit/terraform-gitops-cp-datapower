@@ -75,3 +75,111 @@ variable "kubeseal_namespace" {
 
 variable "cp_entitlement_key" {
 }
+
+variable "kubeseal_cert" {
+  type        = string
+  description = "The certificate/public key used to encrypt the sealed secrets"
+  default     = ""
+}
+
+variable "server_name" {
+  type        = string
+  description = "The name of the server"
+  default     = "default"
+}
+
+variable "channel" {
+  type        = string
+  description = "Channel number for subscription"
+  default     = "v1.5"
+}
+
+variable "catalog" {
+  type        = string
+  description = "The catalog source that should be used to deploy the operator"
+  default     = "ibm-operator-catalog"
+}
+
+variable "catalog_namespace" {
+  type        = string
+  description = "The namespace where the catalog has been deployed"
+  default     = "openshift-marketplace"
+}
+
+variable "dpInstanceName" {
+  type        = string
+  description = "The name of the DataPower instance"
+  default     = "dp"
+}
+
+variable "dpWebuiConfigMap" {
+  type        = string
+  description = "The name of the Config map to enable WebUI"
+  default     = "dp-webui-config"
+}
+
+variable "dpLicense" {
+  type        = string
+  description = "License string to use"
+  default     = "L-RJON-C5SF54"
+}
+
+variable "dpLicenseUse" {
+  type        = string
+  description = "License use - Prod, Non Production etc"
+  default     = "nonproduction"
+}
+
+variable "memoryLimits" {
+  type        = string
+  description = "Memory limit for DP containers"
+  default     = "4Gi"
+}
+
+variable "cpuLimits" {
+  type        = string
+  description = "CPU limit for DP containers"
+  default     = "1"
+}
+
+variable "memoryRequests" {
+  type        = string
+  description = "Memory requests for DP containers"
+  default     = "4Gi"
+}
+
+variable "cpuRequests" {
+  type        = string
+  description = "CPU requests for DP containers"
+  default     = "1"
+}
+
+variable "passwordSecret" {
+  type        = string
+  description = "Secret which stores the Admin password"
+  default     = "dp-credentials"
+}
+
+variable "dpReleaseVersion" {
+  type        = string
+  description = "Release version for DataPower"
+  default     = "10.0-cd"
+}
+
+variable "replicas" {
+  type        = string
+  description = "Number of replicas for DataPower"
+  default     = "1"
+}
+
+variable "subscription_namespace" {
+  type        = string
+  description = "The namespace where the application should be deployed"
+  default     = "openshift-operators"
+}
+
+variable "entitlement_key" {
+  type        = string
+  description = "The entitlement key required to access Cloud Pak images"
+  sensitive   = true
+}
