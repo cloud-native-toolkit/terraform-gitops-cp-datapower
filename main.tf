@@ -35,7 +35,7 @@ locals {
           }
         ]
         license = {
-          accept = "true"
+          accept = true
           license = var.dpLicense
           use = var.dpLicenseUse
         }
@@ -45,9 +45,10 @@ locals {
             cpu    = var.cpuLimits
           }
           requests = {
-            cpu = var.cpuRequests
-            memory =  var.memoryRequests
+            cpu    = var.cpuRequests
+            memory = var.memoryRequests
           }
+        }
         users = [
           {
             accessLevel = "privileged"
@@ -57,7 +58,6 @@ locals {
         ]
         version = var.dpReleaseVersion
         replicas = var.replicas
-        }
       }
 
     }

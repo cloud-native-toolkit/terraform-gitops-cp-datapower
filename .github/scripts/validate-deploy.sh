@@ -55,9 +55,9 @@ else
   sleep 30
 fi
 
-SUBSCRIPTION="subscription/${COMPONENT_NAME}"
+SUBSCRIPTION="subscription/datapower-operator"
 count=0
-until $(kubectl get subscriptions -n "${NAMESPACE}" | grep "${SUBSCRIPTION}") || [[ $count -eq 20 ]]; do
+until kubectl get ${SUBSCRIPTION} -n "${NAMESPACE}"  || [[ $count -eq 20 ]]; do
   echo "Waiting for ${SUBSCRIPTION} in ${NAMESPACE}"
   count=$((count + 1))
   sleep 15
