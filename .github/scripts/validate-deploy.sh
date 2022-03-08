@@ -21,7 +21,7 @@ TYPE="operators"
 echo "<-------------Printing contents of gitops-output.json------------->"
 cat gitops-output.json
 
-COMPONENT_NAME="datapower-operator"
+COMPONENT_NAME="ibm-datapower"
 
 if [[ ! -f "argocd/2-services/cluster/${SERVER_NAME}/${TYPE}/${NAMESPACE}-${COMPONENT_NAME}.yaml" ]]; then
   echo "ArgoCD config missing - argocd/2-services/cluster/${SERVER_NAME}/${TYPE}/${NAMESPACE}-${COMPONENT_NAME}.yaml"
