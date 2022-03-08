@@ -167,9 +167,9 @@ variable "dpReleaseVersion" {
 }
 
 variable "replicas" {
-  type        = string
+  type        = integer
   description = "Number of replicas for DataPower"
-  default     = "1"
+  default     = 1
 }
 
 variable "subscription_namespace" {
