@@ -136,12 +136,6 @@ variable "memoryLimits" {
   default     = "4Gi"
 }
 
-variable "cpuLimits" {
-  type        = string
-  description = "CPU limit for DP containers"
-  default     = "1"
-}
-
 variable "memoryRequests" {
   type        = string
   description = "Memory requests for DP containers"

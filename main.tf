@@ -42,7 +42,6 @@ locals {
         resources = {
           limits = {
             memory = var.memoryLimits
-            cpu    = var.cpuLimits
           }
           requests = {
             cpu    = var.cpuRequests
