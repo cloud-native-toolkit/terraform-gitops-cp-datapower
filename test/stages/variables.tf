@@ -167,7 +167,7 @@ variable "dpReleaseVersion" {
 }
 
 variable "replicas" {
-  type        = integer
+  type        = number
   description = "Number of replicas for DataPower"
   default     = 1
 }
