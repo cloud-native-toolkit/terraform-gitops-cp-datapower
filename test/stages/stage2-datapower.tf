@@ -1,8 +1,8 @@
 module "datapower" {
   source = "./module"
-  depends_on = [
-    module.gitops-cp-datapower-operator
-  ]
+  #depends_on = [
+  #  module.gitops_cp_datapower_operator
+  #]
   gitops_config = module.gitops.gitops_config
   git_credentials = module.gitops.git_credentials
   server_name = module.gitops.server_name
