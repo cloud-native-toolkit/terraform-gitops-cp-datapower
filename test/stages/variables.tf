@@ -150,7 +150,7 @@ variable "cpuRequests" {
 
 variable "passwordSecret" {
   type        = string
-  description = "Secret which stores the Admin password"
+  description = "Secret which stores the Admin password. This secret is automatically created."
   default     = "dp-credentials"
 }
 
@@ -162,7 +162,7 @@ variable "dpReleaseVersion" {
 
 variable "replicas" {
   type        = number
-  description = "Number of replicas for DataPower"
+  description = "Number of replicas for DataPower. Choose 1, 3, or 5"
   default     = 1
 }
 
