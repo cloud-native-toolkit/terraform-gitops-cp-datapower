@@ -51,4 +51,16 @@ versions:
         moduleRef:
           id: catalogs
           output: entitlement_key
+      - name: dpLicenseUse
+        moduleRef:
+          id: dep-manager
+          output: datapower.license_use
+      - name: dpReleaseVersion
+        moduleRef:
+          id: dep-manager
+          output: datapower.version
+      - name: dpLicense
+        moduleRef:
+          id: dep-manager
+          output: datapower.license
 softwareProvider: ibm-cp
