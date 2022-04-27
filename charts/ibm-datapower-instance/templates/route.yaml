@@ -1,0 +1,52 @@
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: {{ .Values.datapower_instance.name }}-webui
+spec:
+  port:
+    targetPort: 9090
+  tls:
+    termination: passthrough
+  to:
+    kind: ""
+    name: {{ .Values.datapower_instance.name }}-svc
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: {{ .Values.datapower_instance.name }}-rmi
+spec:
+  port:
+    targetPort: 5554
+  tls:
+    termination: passthrough
+  to:
+    kind: ""
+    name: {{ .Values.datapower_instance.name }}-svc
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: {{ .Values.datapower_instance.name }}-xmi
+spec:
+  port:
+    targetPort: 5550
+  tls:
+    termination: passthrough
+  to:
+    kind: ""
+    name: {{ .Values.datapower_instance.name }}-svc
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  name: {{ .Values.datapower_instance.name }}-api-traffic
+spec:
+  port:
+    targetPort: 3000
+  tls:
+    termination: passthrough
+  to:
+    kind: ""
+    name: {{ .Values.datapower_instance.name }}-svc
+
