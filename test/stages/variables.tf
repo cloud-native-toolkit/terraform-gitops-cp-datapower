@@ -121,7 +121,7 @@ variable "dpWebuiConfigMap" {
 variable "dpLicense" {
   type        = string
   description = "License string to use"
-  default     = "L-RJON-C5SF54"
+  default     = "L-RJON-CCCP46"
 }
 
 variable "dpLicenseUse" {
