@@ -9,7 +9,7 @@ datapower_instance:
             - dp-webui-config
     license:
       accept: true
-      license: L-RJON-C5SF54
+      license: L-RJON-CCCP46
       use: nonproduction
     resources:
       limits:
