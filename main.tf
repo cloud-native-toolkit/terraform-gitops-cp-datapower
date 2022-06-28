@@ -7,7 +7,8 @@ locals {
   instance_chart_dir = "${path.module}/charts/${local.instance_name}"
   instance_yaml_dir     = "${path.cwd}/.tmp/${local.base_name}/chart/${local.instance_name}"
 
-
+  namespace= var.namespace
+  
   instance_values_content = {
     datapower_instance = {
       name = var.dpInstanceName
@@ -47,10 +48,10 @@ locals {
 
     }
   }
-  values_file = "values-${var.server_name}.yaml"
+  values_file = "values.yaml"
   layer = "services"
   application_branch = "main"
-  type="instances"
+  type="base"
   layer_config = var.gitops_config[local.layer]
 }
 
@@ -67,6 +68,7 @@ module pull_secret {
   server_name = var.server_name
   kubeseal_cert = var.kubeseal_cert
   namespace = var.namespace
+  
   docker_username = "cp"
   docker_password = var.entitlement_key
   docker_server   = "cp.icr.io"
@@ -89,7 +91,8 @@ resource null_resource setup_gitops {
   triggers = {
     bin_dir = local.bin_dir
     name = local.instance_name
-    namespace = var.namespace
+    
+    namespace = local.namespace
     yaml_dir = local.instance_yaml_dir
     server_name = var.server_name
     layer = local.layer
