@@ -30,6 +30,7 @@ COMPONENT_NAME="ibm-datapower-instance"
 
 if [[ ! -f "argocd/2-services/cluster/${SERVER_NAME}/${TYPE}/${NAMESPACE}-${COMPONENT_NAME}.yaml" ]]; then
   echo "ArgoCD config missing - argocd/2-services/cluster/${SERVER_NAME}/${TYPE}/${NAMESPACE}-${COMPONENT_NAME}.yaml"
+  sleep 180
   exit 1
 fi
 
