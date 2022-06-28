@@ -4,6 +4,12 @@ GIT_REPO=$(cat git_repo)
 GIT_TOKEN=$(cat git_token)
 
 export KUBECONFIG=$(cat .kubeconfig)
+NAMESPACE=$(cat .namespace)
+COMPONENT_NAME="$(jq -r '.name // "my-module"' gitops-output.json)"
+BRANCH=$(jq -r '.branch // "main"' gitops-output.json)
+SERVER_NAME=$(jq -r '.server_name // "default"' gitops-output.json)
+LAYER=$(jq -r '.layer_dir // "2-services"' gitops-output.json)
+TYPE=$(jq -r '.type // "base"' gitops-output.json)
 
 mkdir -p .testrepo
 
@@ -15,10 +21,10 @@ find . -name "*"
 
 ## ***** Instance
 
-NAMESPACE="gitops-cp-datapower"
-BRANCH="main"
-SERVER_NAME="default"
-TYPE="instances"
+# NAMESPACE="gitops-cp-datapower"
+# BRANCH="main"
+# SERVER_NAME="default"
+# TYPE="instances"
 
 COMPONENT_NAME="ibm-datapower-instance"
 
