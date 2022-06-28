@@ -83,7 +83,7 @@ resource null_resource create_instance_yaml {
   }
 }
 
-resource null_resource setup_instance_gitops {
+resource null_resource setup_gitops {
   depends_on = [null_resource.create_instance_yaml]
 
   triggers = {
