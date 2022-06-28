@@ -5,13 +5,13 @@ resource null_resource write_outputs {
 
     environment = {
       OUTPUT = jsonencode({
-        name        = module.gitops.name
-        branch      = module.gitops.branch
-        namespace   = module.gitops.namespace
-        server_name = module.gitops.server_name
-        layer       = module.gitops.layer
-        layer_dir   = module.gitops.layer == "infrastructure" ? "1-infrastructure" : (module.gitops.layer == "services" ? "2-services" : "3-applications")
-        type        = module.gitops.type
+        name        = module.datapower.name
+        branch      = module.datapower.branch
+        namespace   = module.datapower.namespace
+        server_name = module.datapower.server_name
+        layer       = module.datapower.layer
+        layer_dir   = module.datapower.layer == "infrastructure" ? "1-infrastructure" : (module.datapower.layer == "services" ? "2-services" : "3-applications")
+        type        = module.datapower.type
       })
     }
   }
