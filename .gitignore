@@ -3,5 +3,3 @@
 terraform.tfstate
 terraform.tfstate.backup
 .terraform/
-/charts/ibm-datapower-instance/test-secret.yaml
-/charts/ibm-datapower-instance/test.sh
