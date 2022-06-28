@@ -158,14 +158,13 @@ variable "replicas" {
   default     = 1
 }
 
-variable "subscription_namespace" {
-  type        = string
-  description = "The namespace where the application should be deployed"
-  default     = "openshift-operators"
-}
-
 variable "entitlement_key" {
   type        = string
   description = "The entitlement key required to access Cloud Pak images"
   sensitive   = true
+}
+
+variable "namespace" {
+  type        = string
+  description = "The namespace where the application should be deployed"
 }

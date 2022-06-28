@@ -2,7 +2,7 @@
 
 output "name" {
   description = "The name of the module"
-  value       = local.name
+  value       = local.instance_name
   depends_on  = [null_resource.setup_gitops]
 }
 
