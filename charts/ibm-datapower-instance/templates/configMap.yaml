@@ -4,4 +4,4 @@ data:
 kind: ConfigMap
 metadata:
   creationTimestamp: null
-  name: {{ .Values.webUIconfigMap.name }}
+  name: {{ .Values.datapower_instance.webUIconfigMap.name }}

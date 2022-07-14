@@ -23,7 +23,8 @@ datapower_instance:
         passwordSecret: dp-credentials
     version: 10.0-cd
     replicas: 1
-webUIconfigMap:
-  name: dp-webui-config
-passwordSecret:
-  name: dp-credentials
+  webUIconfigMap:
+    name: dp-webui-config
+  passwordSecret:
+    name: dp-credentials
+
