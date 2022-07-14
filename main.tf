@@ -10,7 +10,9 @@ locals {
 
   instance_values_content = {
     datapower_instance = {
+
       name = var.dpInstanceName
+      namespace= var.namespace
       spec = {
         domains = [
           {
@@ -44,10 +46,15 @@ locals {
         version = var.dpReleaseVersion
         replicas = var.replicas
       }
-
+      webUIconfigMap={
+        name="dp-webui-config"
+      }
+      passwordSecret={
+        name="dp-credentials"
+      }      
     }
   }
-  values_file = "values-${var.server_name}.yaml"
+  values_file = "values.yaml"
   layer = "services"
   application_branch = "main"
   type="instances"
@@ -99,7 +106,7 @@ resource null_resource setup_instance_gitops {
   }
 
   provisioner "local-exec" {
-    command = "${self.triggers.bin_dir}/igc gitops-module '${self.triggers.name}' -n '${self.triggers.namespace}' --contentDir '${self.triggers.yaml_dir}' --serverName '${self.triggers.server_name}' -l '${self.triggers.layer}' --type=${self.triggers.type} --valueFiles='values.yaml,${local.values_file}'"
+    command = "${self.triggers.bin_dir}/igc gitops-module '${self.triggers.name}' -n '${self.triggers.namespace}' --contentDir '${self.triggers.yaml_dir}' --serverName '${self.triggers.server_name}' -l '${self.triggers.layer}' --type=${self.triggers.type} --valueFiles='${local.values_file}'"
 
     environment = {
       GIT_CREDENTIALS = nonsensitive(self.triggers.git_credentials)
