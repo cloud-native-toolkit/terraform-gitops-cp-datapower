@@ -4,6 +4,200 @@ description: Module to populate a gitops repo with the resources to provision cp
 tags:
   - tools
   - gitops
-versions: []
+versions:
+  - platforms:
+      - ocp4
+    dependencies:
+      - id: gitops
+        refs:
+          - source: github.com/cloud-native-toolkit/terraform-tools-gitops.git
+            version: '>= 1.1.0'
+      - id: namespace
+        refs:
+          - source: github.com/cloud-native-toolkit/terraform-gitops-namespace.git
+            version: '>= 1.0.0'
+      - id: catalogs
+        refs:
+          - source: github.com/cloud-native-toolkit/terraform-gitops-cp-catalogs.git
+            version: '>= 1.0.0'
+      - id: datapower-operator
+        refs:
+          - source: >-
+              github.com/cloud-native-toolkit/terraform-gitops-cp-datapower-operator.git
+            version: '>= 1.0.0'
+    variables:
+      - name: gitops_config
+        type: |-
+          object({
+              boostrap = object({
+                argocd-config = object({
+                  project = string
+                  repo = string
+                  url = string
+                  path = string
+                })
+              })
+              infrastructure = object({
+                argocd-config = object({
+                  project = string
+                  repo = string
+                  url = string
+                  path = string
+                })
+                payload = object({
+                  repo = string
+                  url = string
+                  path = string
+                })
+              })
+              services = object({
+                argocd-config = object({
+                  project = string
+                  repo = string
+                  url = string
+                  path = string
+                })
+                payload = object({
+                  repo = string
+                  url = string
+                  path = string
+                })
+              })
+              applications = object({
+                argocd-config = object({
+                  project = string
+                  repo = string
+                  url = string
+                  path = string
+                })
+                payload = object({
+                  repo = string
+                  url = string
+                  path = string
+                })
+              })
+            })
+        description: Config information regarding the gitops repo structure
+        moduleRef:
+          id: gitops
+          output: gitops_config
+      - name: git_credentials
+        type: |-
+          list(object({
+              repo = string
+              url = string
+              username = string
+              token = string
+            }))
+        description: The credentials for the gitops repo(s)
+        sensitive: true
+        moduleRef:
+          id: gitops
+          output: git_credentials
+      - name: namespace
+        type: string
+        description: The namespace where the application should be deployed
+        moduleRef:
+          id: namespace
+          output: name
+      - name: kubeseal_cert
+        type: string
+        description: The certificate/public key used to encrypt the sealed secrets
+        default: ''
+        moduleRef:
+          id: gitops
+          output: sealed_secrets_cert
+      - name: server_name
+        type: string
+        description: The name of the server
+        default: default
+        moduleRef:
+          id: gitops
+          output: server_name
+      - name: channel
+        type: string
+        description: Channel number for subscription
+        default: v1.5
+      - name: catalog
+        type: string
+        description: The catalog source that should be used to deploy the operator
+        default: ibm-operator-catalog
+        moduleRef:
+          id: catalogs
+          output: catalog_ibmoperators
+      - name: catalog_namespace
+        type: string
+        description: The namespace where the catalog has been deployed
+        default: openshift-marketplace
+      - name: dpInstanceName
+        type: string
+        description: The name of the DataPower instance
+        default: dp
+      - name: dpWebuiConfigMap
+        type: string
+        description: The name of the Config map to enable WebUI
+        default: dp-webui-config
+      - name: dpLicense
+        type: string
+        description: License string to use
+        default: L-RJON-CCCP46
+        moduleRef:
+          id: dep-manager
+          output: datapower.license
+      - name: dpLicenseUse
+        type: string
+        description: License use - Prod, Non Production etc
+        default: nonproduction
+        moduleRef:
+          id: dep-manager
+          output: datapower.license_use
+      - name: memoryLimits
+        type: string
+        description: Memory limit for DP containers
+        default: 4Gi
+      - name: memoryRequests
+        type: string
+        description: Memory requests for DP containers
+        default: 4Gi
+      - name: cpuRequests
+        type: string
+        description: CPU requests for DP containers
+        default: '1'
+      - name: passwordSecret
+        type: string
+        description: >-
+          Secret which stores the Admin password. This secret is automatically
+          created.
+        default: dp-credentials
+      - name: dpReleaseVersion
+        type: string
+        description: Release version for DataPower
+        default: 10.0-cd
+        moduleRef:
+          id: dep-manager
+          output: datapower.version
+      - name: replicas
+        type: number
+        description: Number of replicas for DataPower. Choose 1, 3, or 5
+        default: '1'
+      - name: subscription_namespace
+        type: string
+        description: The namespace where the application should be deployed
+        default: openshift-operators
+      - name: entitlement_key
+        type: string
+        description: The entitlement key required to access Cloud Pak images
+        sensitive: true
+        moduleRef:
+          id: catalogs
+          output: entitlement_key
+    version: v1.0.0
+    outputs:
+      - name: dpInstanceName
+        description: The name of DataPower instance
+      - name: dpWebuiConfigMap
+        description: Name of configmap which contains the configuration to enable WebUI
+      - name: adminPasswordSecret
+        description: Secret which stores admin password
 softwareProvider: ibm-cp
 id: github.com/cloud-native-toolkit/terraform-gitops-cp-datapower
