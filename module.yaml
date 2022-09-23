@@ -7,6 +7,9 @@ tags:
 versions:
   - platforms:
       - ocp4
+    providers:
+     - name: gitops
+       source: "cloud-native-toolkit/gitops"
     dependencies:
       - id: gitops
         refs:
