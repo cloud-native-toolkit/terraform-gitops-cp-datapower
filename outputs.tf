@@ -17,7 +17,7 @@ output "adminPasswordSecret" {
 
 output "name" {
   description = "The name of the module"
-  value       = local.name
+  value       = local.base_name
   depends_on  = [gitops_module.module]
 }
 
