@@ -68,7 +68,7 @@ module setup_clis {
 
 resource gitops_pull_secret cp_icr_io {
   name = "ibm-entitlement-key"
-  namespace = local.namespace
+  namespace = var.namespace
   server_name = var.server_name
   branch = local.application_branch
   layer = local.layer
