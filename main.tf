@@ -90,7 +90,7 @@ resource null_resource create_instance_yaml {
 resource gitops_module setup_gitops {
   depends_on = [null_resource.create_instance_yaml]
 
-  name = local.base_name
+  name = local.instance_name
   namespace = var.namespace
   content_dir = local.instance_yaml_dir
   server_name = var.server_name
