@@ -2,7 +2,6 @@ locals {
   base_name     = "ibm-datapower"
   subscription_name = local.base_name
   instance_name = "${local.base_name}-instance"
-  bin_dir       = module.setup_clis.bin_dir
 
   instance_chart_dir = "${path.module}/charts/${local.instance_name}"
   instance_yaml_dir     = "${path.cwd}/.tmp/${local.base_name}/chart/${local.instance_name}"
@@ -61,10 +60,6 @@ locals {
   layer_config = var.gitops_config[local.layer]
 }
 
-module setup_clis {
-  source = "github.com/cloud-native-toolkit/terraform-util-clis.git"
-}
-
 
 resource gitops_pull_secret cp_icr_io {
   name = "ibm-entitlement-key"
@@ -75,7 +70,6 @@ resource gitops_pull_secret cp_icr_io {
   credentials = yamlencode(var.git_credentials)
   config = yamlencode(var.gitops_config)
   kubeseal_cert = var.kubeseal_cert
-
 
   secret_name = "ibm-entitlement-key"
   registry_server = "cp.icr.io"
@@ -93,9 +87,8 @@ resource null_resource create_instance_yaml {
   }
 }
 
-resource gitops_module module {
+resource gitops_module setup_gitops {
   depends_on = [null_resource.create_instance_yaml]
-
 
   name = local.base_name
   namespace = var.namespace
